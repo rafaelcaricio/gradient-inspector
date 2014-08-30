@@ -16,4 +16,4 @@ You need a webserver to load the `test/development.html` file properly in your b
 make
 ```
 
-and access `http://localhost:8080` in your Chrome browser.
+Then access `http://localhost:8080/test/development.html` in your Chrome browser.
