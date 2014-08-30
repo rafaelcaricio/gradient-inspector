@@ -1,4 +1,4 @@
 gradient-inspector
 ==================
 
-Chrome extension that allows inspecting into gradients of an element.
+Chrome Extension that adds a sidebar to the Developer Tools that displays information about the gradients applied to the inspected element.
