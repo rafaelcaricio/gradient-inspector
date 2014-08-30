@@ -29,15 +29,22 @@ var inspectElement = function() {
 }
 
 function plotLayers(info) {
-  var container = document.querySelector('#layers');
+  var container = document.querySelector('#layers'),
+      template = document.querySelector('#visual-sample-template');
+
   info.layers.forEach(function(layer, i) {
-    var visualSample = document.createElement('div');
-    visualSample.setAttribute('class', 'visual-sample');
+    var content = template.cloneNode(true).content,
+      visualSample = content.querySelector('.visual-sample'),
+      label = content.querySelector('.label');
+
     visualSample.style.width = info.width;
     visualSample.style.height = info.height;
     visualSample.style.backgroundImage = layer;
 
-    container.appendChild(visualSample);
+    label.innerHTML = layer;
+    label.style.width = info.width;
+
+    container.appendChild(document.importNode(content, true));
   });
 }
 

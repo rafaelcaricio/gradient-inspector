@@ -30,12 +30,33 @@
       margin: 10px 5px;
     }
 
-    .visual-sample {
-      margin: 10px;
-      border: 1px solid #d2d2d2;
+    .visual-sample-container {
       display: inline-block;
+      margin: 10px;
+      vertical-align: top;
+      text-align: center;
+    }
+
+    .visual-sample {
+      display: inline-block;
+      border: 1px solid #d2d2d2;
+    }
+
+    .visual-sample-container .label {
+      min-width: 150px;
+      margin-top: 5px;
+      font-family: "Lucida Console", Monaco, monospace;
+      font-size: 12px;
+      text-align: left;
     }
   </style>
+
+  <template id="visual-sample-template">
+    <div class="visual-sample-container">
+      <div class="visual-sample"></div>
+      <div class="label"></div>
+    </div>
+  </template>
 
   <div class="gradient-inspector">
     <div class="header">
