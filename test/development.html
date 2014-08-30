@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <script>
+      var evalCallback,
+          inspectElementFunction;
+
+      function patchedEval(literalFunction, callback) {
+        inspectElementFunction = literalFunction;
+        evalCallback = callback;
+      };
+
+      // monkey patch
+      chrome.devtools = {
+          inspectedWindow: {
+            eval: patchedEval
+        }
+      };
+    </script>
+
+    <link rel="import" href="../sidebarPanel.html">
+
+    <style>
+      #inspectedElement {
+        width: 175px;
+        height: 175px;
+        background-image: radial-gradient(circle at 191px 19px, rgb(0, 0, 0) 114px, transparent 11px);
+      }
+    </style>
+  </head>
+  <body>
+
+  <div id="inspectedElement"></div>
+
+  <script>
+    var link = document.querySelector('link[rel="import"]');
+    var content = link.import;
+    var el = content.querySelector('body');
+
+    document.body.appendChild(el.cloneNode(true));
+
+    var result = (function() {
+      var $0 = document.querySelector('#inspectedElement')
+      return eval(inspectElementFunction);
+    })();
+
+    evalCallback(result, false);
+  </script>
+  </body>
+</html>

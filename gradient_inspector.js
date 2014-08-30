@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-var container = document.querySelector('#layers');
 
 // function to be injected in the context of the inspected page.
 var inspectElement = function() {
@@ -30,6 +29,7 @@ var inspectElement = function() {
 }
 
 function plotLayers(info) {
+  var container = document.querySelector('#layers');
   info.layers.forEach(function(layer, i) {
     var visualSample = document.createElement('div');
     visualSample.setAttribute('class', 'visual-sample');
@@ -46,7 +46,7 @@ chrome.devtools.inspectedWindow.eval(
   "(" + inspectElement + ")();",
   function(result, isException) {
     if (isException) {
-      container.innerHTML = "<small>Not possible to get element info or element does not use gradients.</small>";
+      document.querySelector('#layers').innerHTML = "<small>Not possible to get element info or element does not use gradients.</small>";
     } else {
       plotLayers(result);
     }
