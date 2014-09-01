@@ -1,10 +1,9 @@
 {
   "name": "CSS Gradient Inspector",
   "version": "0.1.0",
-  "description": "Extends the Developer Tools, adding a sidebar that displays information about the gradients applied to the inspected element. You can also disable and enable gradients for debugging.",
+  "description": "Extends the Developer Tools, adding a sidebar that displays information about the gradients applied to the inspected element.",
   "devtools_page": "devtools.html",
   "manifest_version": 2,
-  "default_locale": "en",
   "icons": {
     "16": "img/pretty_logo_x16.png",
     "48": "img/pretty_logo_x48.png",
