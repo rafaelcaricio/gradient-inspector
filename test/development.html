@@ -63,6 +63,18 @@
     })();
 
     evalCallback(result, false);
+
+    // monkey patch
+    chrome.devtools = {
+        inspectedWindow: {
+          eval: function(newFunc, callback) {
+            callback((function() {
+              var $0 = document.querySelector('#inspectedElement')
+              return eval(newFunc);
+            })(), false);
+          }
+      }
+    };
   </script>
   </body>
 </html>

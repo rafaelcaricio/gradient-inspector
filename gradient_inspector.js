@@ -50,6 +50,20 @@ function parseDefinitions(literalDefinitions) {
   return layers;
 }
 
+function toggleLayer(e) {
+  var toActivate = document.querySelectorAll('#layers input:checked'),
+    activeLayers = [];
+
+  for (var i = 0; i < toActivate.length; i++) {
+    activeLayers.push(toActivate[i].value);
+  }
+
+  chrome.devtools.inspectedWindow.eval(
+    '(function toggle(){$0.style.backgroundImage="##";})();'.replace("##", activeLayers.toString()),
+    function(result, isException) { }
+  );
+}
+
 
 function plotLayers(inspectedElementStyle, layers) {
   var container = document.querySelector('#layers'),
@@ -58,15 +72,25 @@ function plotLayers(inspectedElementStyle, layers) {
   layers.forEach(function(layer, i) {
     var content = template.cloneNode(true).content,
       visualSample = content.querySelector('.visual-sample'),
-      label = content.querySelector('.label');
+      info = content.querySelector('.info'),
+      label = content.querySelector('label'),
+      input = content.querySelector('input'),
+      layerId = "vs-" + i;
 
     visualSample.style.width = inspectedElementStyle.width;
     visualSample.style.height = inspectedElementStyle.height;
     visualSample.style.backgroundImage = layer;
 
+    input.id = layerId;
+    input.value = layer;
+
+    label.setAttribute("for", layerId);
     label.innerHTML = layer;
-    label.style.width = inspectedElementStyle.width;
+    info.style.width = inspectedElementStyle.width;
 
     container.appendChild(document.importNode(content, true));
+
+    input = container.querySelector('#' + layerId);
+    input.addEventListener("change", toggleLayer, true);
   });
 }

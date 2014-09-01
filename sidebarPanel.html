@@ -42,19 +42,25 @@
       border: 1px solid #d2d2d2;
     }
 
-    .visual-sample-container .label {
+    .visual-sample-container .info {
       min-width: 150px;
       margin-top: 5px;
+      text-align: left;
+    }
+
+    .visual-sample-container .info label {
       font-family: "Lucida Console", Monaco, monospace;
       font-size: 12px;
-      text-align: left;
     }
   </style>
 
   <template id="visual-sample-template">
     <div class="visual-sample-container">
       <div class="visual-sample"></div>
-      <div class="label"></div>
+      <div class="info">
+        <input type="checkbox" checked>
+        <label></label>
+      </div>
     </div>
   </template>
 
