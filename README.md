@@ -1,9 +1,14 @@
 gradient-inspector
 ==================
 
-Chrome Extension that adds a sidebar to the Developer Tools that displays information about the gradients applied to the inspected element.
+Chrome Extension that adds a sidebar to the Developer Tools that displays information about the gradients applied to the inspected element. You can also toggle each gradient individually as they are different layers.
 
-![](https://github.com/rafaelcaricio/gradient-inspector/blob/master/img/screenshot.png)
+[![](https://github.com/rafaelcaricio/gradient-inspector/blob/master/img/screenshot.png)](http://bit.ly/cssGradientInspector)
+
+Installation
+------------
+
+You can install this plugin via [Chrome Web Store](http://bit.ly/cssGradientInspector).
 
 Development instructions
 ------------------------
