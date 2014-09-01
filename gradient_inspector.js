@@ -5,57 +5,68 @@
 
 // function to be injected in the context of the inspected page.
 var inspectElement = function() {
-  var styles = getComputedStyle($0, false),
-    definitions = styles.backgroundImage,
-    layerDefinition = null,
-    rules = definitions.split(/\w+\-gradient/),
-    rulesTypes = definitions.match(/(\w+)\-gradient/g),
-    result = { __proto__: null,
-      layers: [],
-      width: styles.width,
-      height: styles.height
-    };
+  var styles = getComputedStyle($0, false);
 
-  rules.forEach(function(layer, i) {
-    if (layer !== '') {
-      layer = layer.replace(/\, *$/, '')
-      layerDefinition = rulesTypes[i - 1] + layer;
-
-      result.layers.push(layerDefinition);
-    }
-  });
-
-  return result;
-}
-
-function plotLayers(info) {
-  var container = document.querySelector('#layers'),
-      template = document.querySelector('#visual-sample-template');
-
-  info.layers.forEach(function(layer, i) {
-    var content = template.cloneNode(true).content,
-      visualSample = content.querySelector('.visual-sample'),
-      label = content.querySelector('.label');
-
-    visualSample.style.width = info.width;
-    visualSample.style.height = info.height;
-    visualSample.style.backgroundImage = layer;
-
-    label.innerHTML = layer;
-    label.style.width = info.width;
-
-    container.appendChild(document.importNode(content, true));
-  });
+  return { __proto__: null,
+    backgroundImage: styles.backgroundImage.toString(),
+    width: styles.width.toString(),
+    height: styles.height.toString()
+  };
 }
 
 
 chrome.devtools.inspectedWindow.eval(
   "(" + inspectElement + ")();",
   function(result, isException) {
+    var container = document.querySelector('#layers');
     if (isException) {
-      document.querySelector('#layers').innerHTML = "<small>Not possible to get element info or element does not use gradients.</small>";
+      container.innerHTML = "<small>Not possible to get element info or element does not use gradients.</small>";
     } else {
-      plotLayers(result);
+      displayResult(result);
     }
   }
 );
+
+
+function displayResult(result) {
+  var backgroundImageDefinitions = parseDefinitions(result.backgroundImage);
+  plotLayers(result, backgroundImageDefinitions);
+}
+
+
+function parseDefinitions(literalDefinitions) {
+  var rules = literalDefinitions.split(/\w+\-gradient/),
+    rulesTypes = literalDefinitions.match(/(\w+)\-gradient/g),
+    layers = [];
+
+  rules.forEach(function(layer, i) {
+    if (layer !== '') {
+      layer = layer.replace(/\, *$/, '')
+      layerDefinition = rulesTypes[i - 1] + layer;
+      layers.push(layerDefinition);
+    }
+  });
+
+  return layers;
+}
+
+
+function plotLayers(inspectedElementStyle, layers) {
+  var container = document.querySelector('#layers'),
+      template = document.querySelector('#visual-sample-template');
+
+  layers.forEach(function(layer, i) {
+    var content = template.cloneNode(true).content,
+      visualSample = content.querySelector('.visual-sample'),
+      label = content.querySelector('.label');
+
+    visualSample.style.width = inspectedElementStyle.width;
+    visualSample.style.height = inspectedElementStyle.height;
+    visualSample.style.backgroundImage = layer;
+
+    label.innerHTML = layer;
+    label.style.width = inspectedElementStyle.width;
+
+    container.appendChild(document.importNode(content, true));
+  });
+}
