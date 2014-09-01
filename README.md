@@ -1,5 +1,5 @@
-gradient-inspector
-==================
+CSS Gradient Inspector
+======================
 
 Chrome Extension that adds a sidebar to the Developer Tools that displays information about the gradients applied to the inspected element. You can also toggle each gradient individually as they are different layers.
 
