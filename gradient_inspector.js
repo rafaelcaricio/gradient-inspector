@@ -8,9 +8,9 @@ var inspectElement = function() {
   var styles = getComputedStyle($0, false);
 
   return { __proto__: null,
-    backgroundImage: styles.backgroundImage.toString(),
-    width: styles.width.toString(),
-    height: styles.height.toString()
+    backgroundImage: styles.backgroundImage,
+    width: styles.width,
+    height: styles.height
   };
 }
 
