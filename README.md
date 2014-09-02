@@ -8,7 +8,7 @@ Chrome Extension that adds a sidebar to the Developer Tools that displays inform
 Installation
 ------------
 
-You can install this plugin via [Chrome Web Store](http://bit.ly/cssGradientInspector).
+You can install this plugin via [Chrome Web Store](http://bit.ly/cssGradientInspector) or [Opera Addons Page](https://addons.opera.com/en/extensions/details/css-gradient-inspector/).
 
 Development instructions
 ------------------------
