@@ -50,6 +50,41 @@ function parseDefinitions(literalDefinitions) {
   return layers;
 }
 
+
+var applyNewStyle = function(element, backgrounImage) {
+  var getDynamicStyle =  function() {
+    var styleId = 'gradient-inspector-rules',
+      dynamicStyle = document.querySelector('#' + styleId);
+
+    if (!dynamicStyle) {
+      dynamicStyle = document.createElement('style');
+      dynamicStyle.setAttribute('id', styleId);
+      document.getElementsByTagName('head')[0].appendChild(dynamicStyle);
+    }
+
+    return dynamicStyle.sheet;
+  }
+
+  var apply = function(dynamicStyle) {
+    var elemId = element.getAttribute('id');
+    if (!elemId) {
+      elemId = 'gradient-inspector-' + (new Date).getTime().toString();
+      element.setAttribute('id', elemId);
+    }
+
+    try {
+      dynamicStyle.removeRule(0);
+    } catch(e) { }
+
+    dynamicStyle.insertRule("#" + elemId + " {\
+      background-image: ## !important;\
+    }".replace("##", backgrounImage || 'none'), 0);
+  }
+
+  apply(getDynamicStyle());
+}
+
+
 function toggleLayer(e) {
   var toActivate = document.querySelectorAll('#layers input:checked'),
     activeLayers = [];
@@ -59,7 +94,7 @@ function toggleLayer(e) {
   }
 
   chrome.devtools.inspectedWindow.eval(
-    '(function toggle(){$0.style.backgroundImage="##";})();'.replace("##", activeLayers.toString()),
+    '(' + applyNewStyle + ')($0,"##");'.replace("##", activeLayers.toString()),
     function(result, isException) { }
   );
 }
