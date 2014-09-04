@@ -35,17 +35,14 @@ function displayResult(result) {
 
 
 function parseDefinitions(literalDefinitions) {
-  var rules = literalDefinitions.split(/\w+\-gradient/),
-    rulesTypes = literalDefinitions.match(/(\w+)\-gradient/g),
-    layers = [];
+  var rules = literalDefinitions.split(/([-\w]+\-gradient)/),
+    layers = [],
+    layer, i, ii;
 
-  rules.forEach(function(layer, i) {
-    if (layer !== '') {
-      layer = layer.replace(/\, *$/, '')
-      layerDefinition = rulesTypes[i - 1] + layer;
-      layers.push(layerDefinition);
-    }
-  });
+  for (i = 1, ii = rules.length; i < ii; i += 2) {
+    layer = rules[i + 1].replace(/\, *$/, '');
+    layers.push(rules[i] + layer);
+  }
 
   return layers;
 }
