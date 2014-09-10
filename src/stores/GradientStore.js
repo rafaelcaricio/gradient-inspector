@@ -10,3 +10,51 @@ var PluginConstants = require('../constants/PluginConstants');
 
 var ActionTypes = PluginConstants.ActionTypes;
 var CHANGE_EVENT = 'change';
+
+var _gradients = {};
+
+
+var GradientStore = merge(EventEmitter.prototype, {
+
+  init: function(rawGradients) {
+  },
+
+  emitChange: function() {
+    this.emit(CHANGE_EVENT);
+  },
+
+  addChangeListener: function(callback) {
+    this.on(CHANGE_EVENT, callback);
+  },
+
+  removeChangeListener: function(callback) {
+    this.removeListener(CHANGE_EVENT, callback);
+  },
+
+  get: function(id) {
+    return _gradients[id];
+  },
+
+  getAll: function() {
+    return _gradients;
+  }
+
+});
+
+GradientStore.dispatchToken = ChatAppDispatcher.register(function(payload) {
+  var action = payload.action;
+
+  switch(action.type) {
+
+    case ActionTypes.RECEIVE_RAW_GRADIENTS:
+      GradientStore.init(action.rawGradients);
+      GradientStore.emitChange();
+      break;
+
+    default:
+      // do nothing
+
+  }
+});
+
+module.exports = GradientStore;
