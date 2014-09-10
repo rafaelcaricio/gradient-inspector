@@ -5,18 +5,30 @@
 var EventEmitter = require('events').EventEmitter;
 var merge = require('react/lib/merge');
 
-var PluginDispacher = require('../dispatcher/PluginDispacher');
+var PluginDispatcher = require('../dispatcher/PluginDispatcher');
 var PluginConstants = require('../constants/PluginConstants');
+var GradientStore = require('../stores/GradientStore');
 
 var ActionTypes = PluginConstants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var _colorStops = {};
+var _colorStops = {},
+    _i = 0;
 
 
 var ColorStopStore = merge(EventEmitter.prototype, {
 
-  init: function(rawGradients) {
+  init: function() {
+    var gradients = GradientStore.getAll();
+
+    gradients.forEach(function(gradient) {
+      gradient.colorStops.forEach(function(colorStop) {
+        var _id = (new Date).getTime() + (_i++);
+        colorStop.id = _id;
+        colorStop.gradientId = gradient.id;
+        _colorStops[_id] = colorStop;
+      }, this);
+    }, this);
   },
 
   emitChange: function() {
@@ -37,17 +49,32 @@ var ColorStopStore = merge(EventEmitter.prototype, {
 
   getAll: function() {
     return _colorStops;
+  },
+
+  getAllForGradient: function(gradientId) {
+    var colorStops = [];
+
+    _colorStops.forEach(function(colorStop) {
+      if (colorStop.gradientId == gradientId) {
+        colorStops.push(colorStop);
+      }
+    });
+
+    return colorStops;
   }
 
 });
 
-ColorStopStore.dispatchToken = ChatAppDispatcher.register(function(payload) {
-  var action = payload.action;
+ColorStopStore.dispatchToken = PluginDispatcher.register(function(payload) {
+  PluginDispacher.waitFor([
+    GradientStore.dispatchToken
+  ]);
 
+  var action = payload.action;
   switch(action.type) {
 
     case ActionTypes.RECEIVE_RAW_GRADIENTS:
-      ColorStopStore.init(action.rawGradients);
+      ColorStopStore.init();
       ColorStopStore.emitChange();
       break;
 

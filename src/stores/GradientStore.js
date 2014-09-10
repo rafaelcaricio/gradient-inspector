@@ -5,18 +5,24 @@
 var EventEmitter = require('events').EventEmitter;
 var merge = require('react/lib/merge');
 
-var PluginDispacher = require('../dispatcher/PluginDispacher');
+var PluginDispatcher = require('../dispatcher/PluginDispatcher');
 var PluginConstants = require('../constants/PluginConstants');
 
 var ActionTypes = PluginConstants.ActionTypes;
 var CHANGE_EVENT = 'change';
 
-var _gradients = {};
+var _gradients = {},
+    _i = 0;
 
 
 var GradientStore = merge(EventEmitter.prototype, {
 
   init: function(rawGradients) {
+    rawGradients.forEach(function(gradient) {
+      var _id = (new Date).getTime() + (_i++);
+      gradient.id = _id;
+      _gradients[_id] = gradient;
+    }, this);
   },
 
   emitChange: function() {
