@@ -1,0 +1,38 @@
+{
+  "name": "gradient-inspector",
+  "version": "0.0.0",
+  "description": "Inspect into CSS gradients",
+  "main": "devtools.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "flux": "^2.0.0",
+    "gradient-parser": "^0.1.2",
+    "react": "^0.11.1"
+  },
+  "devDependencies": {
+    "browserify": "^5.11.1",
+    "del": "^0.1.3",
+    "gulp": "^3.8.8",
+    "gulp-react": "^1.0.0",
+    "vinyl-source-stream": "^1.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rafaelcaricio/gradient-inspector.git"
+  },
+  "keywords": [
+    "chrome",
+    "plugin"
+  ],
+  "author": "Rafael Caricio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rafaelcaricio/gradient-inspector/issues"
+  },
+  "homepage": "https://github.com/rafaelcaricio/gradient-inspector"
+}
