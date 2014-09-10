@@ -1,0 +1,22 @@
+{
+  "name": "gradient-inspector",
+  "version": "0.1.1",
+  "homepage": "https://github.com/rafaelcaricio/gradient-inspector",
+  "authors": [
+    "Rafael Caricio <rafael.jacinto@gmail.com>"
+  ],
+  "description": "Chrome Plugin for inspecting into CSS gradients.",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "chrome",
+    "plugin"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "gradient-parser": "~0.1.3",
+    "angular": "~1.2.23"
+  }
+}
