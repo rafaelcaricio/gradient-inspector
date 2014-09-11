@@ -42,7 +42,12 @@ var GradientStore = merge(EventEmitter.prototype, {
   },
 
   getAll: function() {
-    return _gradients;
+    var items = [];
+    _colorStops.forEach(function(gradient) {
+      items.push(gradient);
+    }, this);
+    return items;
+
   }
 
 });

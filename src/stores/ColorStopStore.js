@@ -48,7 +48,11 @@ var ColorStopStore = merge(EventEmitter.prototype, {
   },
 
   getAll: function() {
-    return _colorStops;
+    var items = [];
+    _colorStops.forEach(function(colorStop) {
+      items.push(colorStop);
+    }, this);
+    return items;
   },
 
   getAllForGradient: function(gradientId) {

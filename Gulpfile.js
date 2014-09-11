@@ -1,11 +1,12 @@
 var gulp = require('gulp');
-var gReact = require('gulp-react');
 var browserify = require('browserify');
+var reactify = require('reactify');
+var concat = require('gulp-concat');
 var source = require('vinyl-source-stream');
 var del = require('del');
 
 var paths = {
-  scripts: ['src/**/*.js']
+  appScript: ['./src/app.jsx']
 };
 
 gulp.task('clean', function(cb) {
@@ -13,9 +14,11 @@ gulp.task('clean', function(cb) {
 });
 
 gulp.task('scripts', function() {
-  return gulp.src(paths.scripts)
-    .pipe(gReact({harmony: true}))
-    .pipe(gulp.dest('build/js'));
+  return browserify(paths.appScript)
+    .transform(reactify)
+    .bundle()
+    .pipe(source('all.js'))
+    .pipe(gulp.dest('./build/'));
 });
 
 gulp.task('build', ['scripts'], function() {
