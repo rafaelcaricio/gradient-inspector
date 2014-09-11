@@ -43,16 +43,18 @@ var GradientStore = merge(EventEmitter.prototype, {
 
   getAll: function() {
     var items = [];
-    _colorStops.forEach(function(gradient) {
-      items.push(gradient);
-    }, this);
+
+    for (var id in _gradients) {
+      items.push(_gradients[id]);
+    }
+
     return items;
 
   }
 
 });
 
-GradientStore.dispatchToken = ChatAppDispatcher.register(function(payload) {
+GradientStore.dispatchToken = PluginDispatcher.register(function(payload) {
   var action = payload.action;
 
   switch(action.type) {

@@ -5,18 +5,20 @@
  * @jsx react.dom
  */
 
-var react = require('react');
+var React = require('react');
+
+var ReactPropTypes = React.PropTypes;
 
 
 var Gradient = React.createClass({
 
   render: function() {
     return (
-      <div class="visual-sample-container">
-        <div class="visual-sample"></div>
-        <div class="info">
+      <div className="visual-sample-container">
+        <div className="visual-sample"></div>
+        <div className="info">
           <input type="checkbox" />
-          <label>{this.props.gradient.type}</label>
+          <label>{this.props.item.type}</label>
         </div>
       </div>
     );

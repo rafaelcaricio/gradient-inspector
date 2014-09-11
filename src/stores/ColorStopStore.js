@@ -49,9 +49,11 @@ var ColorStopStore = merge(EventEmitter.prototype, {
 
   getAll: function() {
     var items = [];
-    _colorStops.forEach(function(colorStop) {
-      items.push(colorStop);
-    }, this);
+
+    for (var id in _colorStops) {
+      items.push(_colorStops[id]);
+    }
+
     return items;
   },
 

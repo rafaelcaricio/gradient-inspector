@@ -13,7 +13,20 @@ var BrowserAPIUtils = require('./webAPIsUtils/WebKitAPIUtils');
 
 BrowserAPIUtils.getGradients();
 
-React.renderComponent(
-  <GradientInspectorPlugin />,
-  document.body
-);
+var initCall,
+  initPlugin = function() {
+
+  var container = document.querySelector('#gradient-inspector-plugin');
+
+  if (container) {
+    React.renderComponent(
+      <GradientInspectorPlugin />,
+      container
+    );
+    clearTimeout(initCall);
+  } else {
+    initCall = setTimeout(initPlugin, 300);
+  }
+};
+
+initCall = setTimeout(initPlugin, 300);
