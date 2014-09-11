@@ -7,14 +7,20 @@
 
 var React = require('react');
 
+var GradientsSection = require('../components/GradientsSection.jsx');
+
+
 var GradientInspectorPlugin = React.createClass({
+
   render: function() {
     return (<div class="gradient-inspector">
       <div class="header">
         <h1>Element Gradients</h1>
       </div>
+      <GradientsSection />
     </div>);
   }
+
 });
 
 module.exports = GradientInspectorPlugin;
