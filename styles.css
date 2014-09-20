@@ -53,9 +53,10 @@ h1 {
 .visual-sample-container .color-stop i {
   display: inline-block;
   border: 1px solid #c2c2c2;
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   vertical-align: middle;
+  background-position: -1px -1px;
 }
 
 #footer-area {

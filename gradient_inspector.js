@@ -97,9 +97,14 @@ function renderLabel(layer) {
   }
 
   layer.colorStops.forEach(function(colorStop, i) {
-    var colorObj = {type: colorStop.type, value: colorStop.value};
+    var inlineColor = 'background-image: url(../img/transparent.png)';
 
-    html += '<span class="color-stop"><i style="background-color: '+ GradientParser.stringify(colorObj) +'"></i> ' + GradientParser.stringify(colorStop) + '</span>';
+    if (colorStop.value != 'transparent') {
+      var colorObj = {type: colorStop.type, value: colorStop.value};
+      inlineColor = 'background-color: ' + GradientParser.stringify(colorObj);
+    }
+
+    html += '<span class="color-stop"><i style="'+ inlineColor +'"></i> ' + GradientParser.stringify(colorStop) + '</span>';
     if (i < layer.colorStops.length - 1) {
       html += ', ';
     }
