@@ -49,3 +49,13 @@ h1 {
   font-family: "Lucida Console", Monaco, monospace;
   font-size: 12px;
 }
+
+#footer-area {
+  width: 100%;
+  margin: 20px 0;
+}
+
+#footer-area textarea {
+  padding: 10px;
+  width: 100%;
+}

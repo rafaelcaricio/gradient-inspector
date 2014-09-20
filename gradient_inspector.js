@@ -80,6 +80,12 @@ function toggleLayer(e) {
     '(' + applyNewStyle + ')($0,"##");'.replace("##", activeLayers.toString()),
     function(result, isException) { }
   );
+
+  showCurrentActiveLayers(activeLayers.join(', '));
+}
+
+function showCurrentActiveLayers(value) {
+  document.querySelector('#footer-area textarea').innerHTML = value;
 }
 
 
@@ -112,4 +118,6 @@ function plotLayers(inspectedElementStyle, layers) {
     input = container.querySelector('#' + layerId);
     input.addEventListener("change", toggleLayer, true);
   });
+
+  showCurrentActiveLayers(GradientParser.stringify(layers));
 }
