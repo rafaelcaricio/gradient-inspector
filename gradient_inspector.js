@@ -88,6 +88,25 @@ function showCurrentActiveLayers(value) {
   document.querySelector('#footer-area textarea').innerHTML = value;
 }
 
+function renderLabel(layer) {
+  var html = '<span>' + layer.type + '</span>(',
+      orientation = GradientParser.stringify(layer.orientation);
+
+  if (orientation) {
+    html += orientation + ', ';
+  }
+
+  layer.colorStops.forEach(function(colorStop, i) {
+    var colorObj = {type: colorStop.type, value: colorStop.value};
+
+    html += '<span class="color-stop"><i style="background-color: '+ GradientParser.stringify(colorObj) +'"></i> ' + GradientParser.stringify(colorStop) + '</span>';
+    if (i < layer.colorStops.length - 1) {
+      html += ', ';
+    }
+  });
+
+  return html;
+}
 
 function plotLayers(inspectedElementStyle, layers) {
   var container = document.querySelector('#layers'),
@@ -110,7 +129,7 @@ function plotLayers(inspectedElementStyle, layers) {
     input.value = serializedLayer;
 
     label.setAttribute("for", layerId);
-    label.innerHTML = serializedLayer;
+    label.innerHTML = renderLabel(layer);
     info.style.width = inspectedElementStyle.width;
 
     container.appendChild(document.importNode(content, true));

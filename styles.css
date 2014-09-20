@@ -50,6 +50,14 @@ h1 {
   font-size: 12px;
 }
 
+.visual-sample-container .color-stop i {
+  display: inline-block;
+  border: 1px solid #c2c2c2;
+  width: 10px;
+  height: 10px;
+  vertical-align: middle;
+}
+
 #footer-area {
   width: 100%;
   margin: 20px 0;
