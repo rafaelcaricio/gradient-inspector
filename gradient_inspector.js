@@ -12,7 +12,7 @@ var inspectElement = function() {
     width: styles.width,
     height: styles.height
   };
-}
+};
 
 
 chrome.devtools.inspectedWindow.eval(
@@ -29,22 +29,8 @@ chrome.devtools.inspectedWindow.eval(
 
 
 function displayResult(result) {
-  var backgroundImageDefinitions = parseDefinitions(result.backgroundImage);
+  var backgroundImageDefinitions = GradientParser.parse(result.backgroundImage);
   plotLayers(result, backgroundImageDefinitions);
-}
-
-
-function parseDefinitions(literalDefinitions) {
-  var rules = literalDefinitions.split(/([-\w]+\-gradient)/),
-    layers = [],
-    layer, i, ii;
-
-  for (i = 1, ii = rules.length; i < ii; i += 2) {
-    layer = rules[i + 1].replace(/\, *$/, '');
-    layers.push(rules[i] + layer);
-  }
-
-  return layers;
 }
 
 
@@ -60,7 +46,7 @@ var applyNewStyle = function(element, backgrounImage) {
     }
 
     return dynamicStyle.sheet;
-  }
+  };
 
   var apply = function(dynamicStyle) {
     var elemId = element.getAttribute('id');
@@ -76,10 +62,10 @@ var applyNewStyle = function(element, backgrounImage) {
     dynamicStyle.insertRule("#" + elemId + " {\
       background-image: ## !important;\
     }".replace("##", backgrounImage || 'none'), 0);
-  }
+  };
 
   apply(getDynamicStyle());
-}
+};
 
 
 function toggleLayer(e) {
@@ -107,17 +93,18 @@ function plotLayers(inspectedElementStyle, layers) {
       info = content.querySelector('.info'),
       label = content.querySelector('label'),
       input = content.querySelector('input'),
-      layerId = "vs-" + i;
+      layerId = "vs-" + i,
+      serializedLayer = GradientParser.stringify(layer);
 
     visualSample.style.width = inspectedElementStyle.width;
     visualSample.style.height = inspectedElementStyle.height;
-    visualSample.style.backgroundImage = layer;
+    visualSample.style.backgroundImage = serializedLayer;
 
     input.id = layerId;
-    input.value = layer;
+    input.value = serializedLayer;
 
     label.setAttribute("for", layerId);
-    label.innerHTML = layer;
+    label.innerHTML = serializedLayer;
     info.style.width = inspectedElementStyle.width;
 
     container.appendChild(document.importNode(content, true));

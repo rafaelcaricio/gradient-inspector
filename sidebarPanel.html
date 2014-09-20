@@ -1,59 +1,8 @@
 <html>
+  <head>
+    <link href="styles.css" media="all" rel="stylesheet" type="text/css" />
+  </head>
 <body>
-  <style>
-    body {
-      margin: 0;
-      font-family: arial;
-    }
-
-    .gradient-inspector {
-      width: 100%;
-    }
-
-    .header {
-      display: inline-block;
-      width: 100%;
-      margin: 0;
-      background-color: #e6e6e6;
-      color: #000;
-      border-top: 1px solid #b3b3b3;
-      border-bottom: 1px solid #b3b3b3;
-    }
-
-    h1 {
-      margin: 1px 5px;
-      font-weight: normal;
-      font-size: 13px;
-    }
-
-    #layers {
-      margin: 10px 5px;
-    }
-
-    .visual-sample-container {
-      display: inline-block;
-      margin: 10px;
-      vertical-align: top;
-      text-align: center;
-    }
-
-    .visual-sample {
-      display: inline-block;
-      border: 1px solid #d2d2d2;
-    }
-
-    .visual-sample-container .info {
-      min-width: 150px;
-      margin-top: 5px;
-      text-align: left;
-    }
-
-    .visual-sample-container .info label {
-      font-family: "Lucida Console", Monaco, monospace;
-      font-size: 12px;
-    }
-  </style>
-
   <template id="visual-sample-template">
     <div class="visual-sample-container">
       <div class="visual-sample"></div>
@@ -72,6 +21,8 @@
     <div id="layers">
     </div>
   </div>
+
+  <script src="bower_components/gradient-parser/build/web.js"></script>
   <script src="gradient_inspector.js"></script>
 </body>
 </html>
