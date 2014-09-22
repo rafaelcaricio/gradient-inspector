@@ -37,15 +37,36 @@ TemplateRender.prototype.bindToValue = function(scope, config) {
   });
 };
 
+function isArray(obj) {
+  return obj.hasOwnProperty('length');
+}
+
 TemplateRender.prototype.bindToDOM = function(scope, config) {
+  var elements = this.content.querySelectorAll(config.sel);
+
+  var watchArrayChanges = function(scope) {
+    var internalValue = scope[config.scopeKey];
+    if (isArray(internalValue)) {
+      Object.observe(internalValue, function() {
+        for (var i = 0; i < elements.length; i++) {
+          var element = elements[i];
+          element.innerHTML = '';
+          config.onChange(scope, element);
+        }
+      });
+    }
+  }, self = this;
+
   this._bindToElement(scope, config, {
     initialState: function(scope, element) {
       element.innerHTML = '';
       config.onChange(scope, element);
+      watchArrayChanges.bind(self)(scope);
     },
     changesFromScope: function(scope, element) {
       element.innerHTML = '';
       config.onChange(scope, element);
+      watchArrayChanges.bind(self)(scope);
     },
     listenChangesFromElement: function(scope, element) {
       // do nothing
