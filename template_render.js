@@ -11,29 +11,27 @@ TemplateRender.prototype.render = function(scope) {
 };
 
 TemplateRender.prototype.bindToContent = function(scope, config) {
+  var applyValueToElement = function(scope, element) {
+    element.innerHTML = scope[config.scopeKey];
+  };
   this._bindToElement(scope, config, {
-    initialState: function(scope, element) {
-      element.innerHTML = scope[config.scope];
-    },
-    changesFromScope: function(scope, element) {
-      element.innerHTML = scope[config.scope];
-    },
+    initialState: applyValueToElement,
+    changesFromScope: applyValueToElement,
     listenChangesFromElement: function(scope, element) {
     }
   });
 };
 
 TemplateRender.prototype.bindToValue = function(scope, config) {
+  var applyValueToElement = function(scope, element) {
+    element.value = scope[config.scopeKey];
+  };
   this._bindToElement(scope, config, {
-    initialState: function(scope, element) {
-      element.value = scope[config.scope];
-    },
-    changesFromScope: function(scope, element) {
-      element.value = scope[config.scope];
-    },
+    initialState: applyValueToElement,
+    changesFromScope: applyValueToElement,
     listenChangesFromElement: function(scope, element) {
       element.addEventListener('keyup', function(ev) {
-        scope[config.scope] = element.value;
+        scope[config.scopeKey] = element.value;
       });
     }
   });
@@ -42,11 +40,32 @@ TemplateRender.prototype.bindToValue = function(scope, config) {
 TemplateRender.prototype.bindToDOM = function(scope, config) {
   this._bindToElement(scope, config, {
     initialState: function(scope, element) {
-      // set callback return as appendChild
+      element.innerHTML = '';
+      config.onChange(scope, element);
     },
     changesFromScope: function(scope, element) {
-      // delete all child and append again appendChild
+      element.innerHTML = '';
+      config.onChange(scope, element);
     },
+    listenChangesFromElement: function(scope, element) {
+      // do nothing
+    }
+  });
+};
+
+TemplateRender.prototype.bindToStyle = function(scope, config) {
+  var calculateResult = (function(scope) {
+    return eval("(" + config.expression + ")");
+  });
+  var applyStyle = function(scope, element) {
+    var newStyles = calculateResult(scope);
+    for (var key in newStyles) {
+      element.style[key] = newStyles[key];
+    }
+  }
+  this._bindToElement(scope, config, {
+    initialState: applyStyle,
+    changesFromScope: applyStyle,
     listenChangesFromElement: function(scope, element) {
       // do nothing
     }
@@ -63,10 +82,10 @@ TemplateRender.prototype.bindToVisible = function(scope, config) {
   };
   this._bindToElement(scope, config, {
     initialState: function(scope, element) {
-      toggle(element, scope[config.scope]);
+      toggle(element, scope[config.scopeKey]);
     },
     changesFromScope: function(scope, element) {
-      toggle(element, scope[config.scope]);
+      toggle(element, scope[config.scopeKey]);
     },
     listenChangesFromElement: function(scope, element) {
       // do nothing
@@ -78,9 +97,15 @@ TemplateRender.prototype._bindToElement = function(scope, config, events) {
   var elements = this.content.querySelectorAll(config.sel);
   Object.observe(scope, function(changes) {
     changes.forEach(function(change) {
-      if (change.name == config.scope) {
-        for (var i = 0; i < elements.length; i++) {
-          var element = elements[i];
+      for (var i = 0; i < elements.length; i++) {
+        var element = elements[i];
+        if (config.scopeKey) {
+          // execute local changes in a variable in the scope
+          if (change.name == config.scopeKey) {
+            events.changesFromScope(scope, element);
+          }
+        } else if (config.expression) {
+          // execute global changes in the scope
           events.changesFromScope(scope, element);
         }
       }
@@ -106,20 +131,43 @@ function extendClass(xClass, proto) {
   return newClass;
 }
 
-var GradientTemplateRender = extendClass(TemplateRender, {
+var sampleContext = {
+  name: 'Rafael',
+  color: 'red',
+  layers: [
+    {title: 'First', content: 'something'},
+    {title: 'Second', content: 'another thing'}
+  ]
+};
+
+var TestLayerTemplateRender = extendClass(TemplateRender, {
+  selector: '#layer-templ',
+  bindData: function(scope) {
+    this.bindToContent(scope, {sel: 'label', scopeKey: 'title'});
+    this.bindToContent(scope, {sel: 'small', scopeKey: 'content'});
+  }
+});
+
+var TestGradientTemplateRender = extendClass(TemplateRender, {
   selector: '#grad-templ',
   bindData: function(scope) {
-    this.bindToContent(scope, {sel: 'label', scope: 'name'});
+    this.bindToContent(scope, {sel: 'label', scopeKey: 'name'});
 
-    this.bindToValue(scope, {sel: '#input1', scope: 'name'});
-    this.bindToValue(scope, {sel: '#input2', scope: 'name'});
+    this.bindToValue(scope, {sel: '#input1', scopeKey: 'name'});
+    this.bindToValue(scope, {sel: '#input2', scopeKey: 'name'});
 
-    this.bindToVisible(scope, {sel: 'label.dwa', scope: 'name', condition: function(value) {
+    this.bindToStyle(scope, {sel: '.text', expression: "{'color': scope.color}"});
+
+    this.bindToVisible(scope, {sel: '.dwa', scopeKey: 'name', condition: function(value) {
       return value == 'show it!';
     }});
 
-    this.bindToDOM(scope, {sel: '#layers', scope: 'layers', callback: function() {
+    this.bindToDOM(scope, {sel: '#layers', scopeKey: 'layers', onChange: function(scope, element) {
       // render subtemplate elements
+      for (var i = 0; i < scope.layers.length; i++) {
+        var content = (new TestLayerTemplateRender).render(scope.layers[i]);
+        element.appendChild(content);
+      }
     }});
   }
 });
