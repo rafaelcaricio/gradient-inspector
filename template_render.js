@@ -1,12 +1,24 @@
 
-var TemplateRender = function() {
+var TemplateRender = function(selector) {
+  if (selector) {
+    this.selector = selector;
+  }
+};
+
+TemplateRender.prototype.getContent = function() {
+  if (!this.content) {
+    var template = document.querySelector(this.selector);
+    this.content = template.cloneNode(true).content;
+    this.content = document.importNode(this.content, true);
+  }
+  return this.content;
 };
 
 TemplateRender.prototype.render = function(scope) {
-  var template = document.querySelector(this.selector);
-  this.content = template.cloneNode(true).content;
-  this.content = document.importNode(this.content, true);
-  this.bindData(scope);
+  this.getContent();
+  if (this.bindData) {
+    this.bindData(scope);
+  }
   return this.content;
 };
 
@@ -78,16 +90,19 @@ TemplateRender.prototype.bindToDOM = function(scope, config) {
   });
 };
 
+TemplateRender.prototype.executeInScope = function(scope, expr) {
+  return (function(scope) {
+    return eval("(function a(){with(scope){return(" + expr + ")}})()");
+  })(scope);
+};
+
 TemplateRender.prototype.bindToStyle = function(scope, config) {
-  var calculateResult = (function(scope) {
-    return eval("(" + config.expression + ")");
-  });
   var applyStyle = function(scope, element) {
-    var newStyles = calculateResult(scope);
+    var newStyles = this.executeInScope(scope, config.expression);
     for (var key in newStyles) {
       element.style[key] = newStyles[key];
     }
-  }
+  }.bind(this);
   this._bindToElement(scope, config, {
     initialState: applyStyle,
     changesFromScope: applyStyle,
@@ -98,24 +113,33 @@ TemplateRender.prototype.bindToStyle = function(scope, config) {
 };
 
 TemplateRender.prototype.bindToVisible = function(scope, config) {
-  var toggle = function(element, value) {
-    if (config.condition(value)) {
+  var toggle = function(scope, element) {
+    if (this.executeInScope(scope, config.expression)) {
       element.style.visibility = 'visible';
     } else {
       element.style.visibility = 'hidden';
     }
-  };
+  }.bind(this);
   this._bindToElement(scope, config, {
     initialState: function(scope, element) {
-      toggle(element, scope[config.scopeKey]);
+      toggle(scope, element);
     },
     changesFromScope: function(scope, element) {
-      toggle(element, scope[config.scopeKey]);
+      toggle(scope, element);
     },
     listenChangesFromElement: function(scope, element) {
       // do nothing
     }
   });
+};
+
+TemplateRender.prototype.bindForEach = function(scope, config) {
+  this.bindToDOM(scope, {elements: config.container, scopeKey: config.scopeKey, onChange: function(scope, element) {
+    for (var i = 0; i < scope[config.scopeKey].length; i++) {
+      var content = (new config.template()).render(scope.layers[i]);
+      element.appendChild(content);
+    }
+  }});
 };
 
 TemplateRender.prototype._bindToElement = function(scope, config, events) {
@@ -145,6 +169,63 @@ TemplateRender.prototype._bindToElement = function(scope, config, events) {
 };
 
 
+var InlineAnnotations = function(template) {
+  this.mapping = {
+    'ng-bind': {
+      method: 'bindToContent',
+      config: function(element, attrValue) {
+        return {elements: [element], scopeKey: attrValue};
+      }
+    },
+    'ng-model': {
+      method: 'bindToValue',
+      config: function(element, attrValue) {
+        return {elements: [element], scopeKey: attrValue};
+      }
+    },
+    'ng-style': {
+      method: 'bindToStyle',
+      config: function(element, attrValue) {
+        return {elements: [element], expression: attrValue};
+      }
+    },
+    'ng-show': {
+      method: 'bindToVisible',
+      config: function(element, attrValue) {
+        return {elements: [element], expression: attrValue};
+      }
+    }
+  };
+  this.template = template;
+};
+
+InlineAnnotations.prototype.parse = function(scope) {
+  this.parseNodes(scope, this.template.getContent().childNodes[0]);
+  return this.template.getContent();
+};
+
+InlineAnnotations.prototype.parseNodes = function(scope, rootNode) {
+  if (!rootNode) {
+    return;
+  }
+
+  if (rootNode.getAttribute) {
+    for (var magicalAttribute in this.mapping) {
+      var attrValue = rootNode.getAttribute(magicalAttribute);
+      if (attrValue) {
+        var mapSettings = this.mapping[magicalAttribute];
+        this.template[mapSettings.method](scope, mapSettings.config(rootNode, attrValue));
+      }
+    }
+  }
+
+  this.parseNodes(scope, rootNode.nextElementSibling);
+  for (var i = 0; i < rootNode.childNodes.length; i++) {
+    this.parseNodes(scope, rootNode.childNodes[i]);
+  }
+};
+
+
 function extendClass(xClass, proto) {
   var newClass = function() {}, attr;
   for (attr in xClass.prototype) {
@@ -155,15 +236,6 @@ function extendClass(xClass, proto) {
   }
   return newClass;
 }
-
-var sampleContext = {
-  name: 'Rafael',
-  color: 'red',
-  layers: [
-    {title: 'First', content: 'something'},
-    {title: 'Second', content: 'another thing'}
-  ]
-};
 
 var TestLayerTemplateRender = extendClass(TemplateRender, {
   selector: '#layer-templ',
@@ -182,18 +254,29 @@ var TestGradientTemplateRender = extendClass(TemplateRender, {
     this.bindToValue(scope, {elements: this.$('#input1'), scopeKey: 'name'});
     this.bindToValue(scope, {elements: this.$('#input2'), scopeKey: 'name'});
 
-    this.bindToStyle(scope, {elements: this.$('.text'), expression: "{'color': scope.color}"});
+    this.bindToStyle(scope, {elements: this.$('.text'), expression: "{'color': color}"});
 
-    this.bindToVisible(scope, {elements: this.$('.dwa'), scopeKey: 'name', condition: function(value) {
-      return value == 'show it!';
-    }});
+    this.bindToVisible(scope, {elements: this.$('.dwa'), expression: "name == 'show it!'"});
 
-    this.bindToDOM(scope, {elements: this.$('#layers'), scopeKey: 'layers', onChange: function(scope, element) {
-      for (var i = 0; i < scope.layers.length; i++) {
-        var content = (new TestLayerTemplateRender()).render(scope.layers[i]);
-        element.appendChild(content);
-      }
-    }});
+    this.bindForEach(scope, {container: this.$('#layers'), scopeKey: 'layers', template: TestLayerTemplateRender});
 
   }
 });
+
+
+var sampleContext = {
+  name: 'Rafael',
+  color: 'red',
+  layers: [
+    {title: 'First', content: 'something'},
+    {title: 'Second', content: 'another thing'}
+  ]
+};
+
+function main() {
+  //document.querySelector('#cont').appendChild((new TestGradientTemplateRender()).render(sampleContext));
+
+  var inlineParser = new InlineAnnotations(new TemplateRender('#grad-templ'));
+  var result = inlineParser.parse(sampleContext);
+  document.querySelector('#cont').appendChild(result);
+}
