@@ -10,6 +10,10 @@ TemplateRender.prototype.render = function(scope) {
   return this.content;
 };
 
+TemplateRender.prototype.$ = function(selector) {
+  return this.content.querySelectorAll(selector);
+};
+
 TemplateRender.prototype.bindToContent = function(scope, config) {
   var applyValueToElement = function(scope, element) {
     element.innerHTML = scope[config.scopeKey];
@@ -42,7 +46,7 @@ function isArray(obj) {
 }
 
 TemplateRender.prototype.bindToDOM = function(scope, config) {
-  var elements = this.content.querySelectorAll(config.sel);
+  var elements = config.elements;
 
   var watchArrayChanges = function(scope) {
     var internalValue = scope[config.scopeKey];
@@ -115,7 +119,7 @@ TemplateRender.prototype.bindToVisible = function(scope, config) {
 };
 
 TemplateRender.prototype._bindToElement = function(scope, config, events) {
-  var elements = this.content.querySelectorAll(config.sel);
+  var elements = config.elements;
   Object.observe(scope, function(changes) {
     changes.forEach(function(change) {
       for (var i = 0; i < elements.length; i++) {
@@ -164,31 +168,32 @@ var sampleContext = {
 var TestLayerTemplateRender = extendClass(TemplateRender, {
   selector: '#layer-templ',
   bindData: function(scope) {
-    this.bindToContent(scope, {sel: 'label', scopeKey: 'title'});
-    this.bindToContent(scope, {sel: 'small', scopeKey: 'content'});
+    this.bindToContent(scope, {elements: this.$('label'), scopeKey: 'title'});
+    this.bindToContent(scope, {elements: this.$('small'), scopeKey: 'content'});
   }
 });
 
 var TestGradientTemplateRender = extendClass(TemplateRender, {
   selector: '#grad-templ',
   bindData: function(scope) {
-    this.bindToContent(scope, {sel: 'label', scopeKey: 'name'});
 
-    this.bindToValue(scope, {sel: '#input1', scopeKey: 'name'});
-    this.bindToValue(scope, {sel: '#input2', scopeKey: 'name'});
+    this.bindToContent(scope, {elements: this.$('label'), scopeKey: 'name'});
 
-    this.bindToStyle(scope, {sel: '.text', expression: "{'color': scope.color}"});
+    this.bindToValue(scope, {elements: this.$('#input1'), scopeKey: 'name'});
+    this.bindToValue(scope, {elements: this.$('#input2'), scopeKey: 'name'});
 
-    this.bindToVisible(scope, {sel: '.dwa', scopeKey: 'name', condition: function(value) {
+    this.bindToStyle(scope, {elements: this.$('.text'), expression: "{'color': scope.color}"});
+
+    this.bindToVisible(scope, {elements: this.$('.dwa'), scopeKey: 'name', condition: function(value) {
       return value == 'show it!';
     }});
 
-    this.bindToDOM(scope, {sel: '#layers', scopeKey: 'layers', onChange: function(scope, element) {
-      // render subtemplate elements
+    this.bindToDOM(scope, {elements: this.$('#layers'), scopeKey: 'layers', onChange: function(scope, element) {
       for (var i = 0; i < scope.layers.length; i++) {
-        var content = (new TestLayerTemplateRender).render(scope.layers[i]);
+        var content = (new TestLayerTemplateRender()).render(scope.layers[i]);
         element.appendChild(content);
       }
     }});
+
   }
 });
