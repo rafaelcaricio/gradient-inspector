@@ -1,6 +1,6 @@
 {
   "name": "CSS Gradient Inspector",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Extends the Developer Tools, adding a sidebar that displays information about the gradients applied to the inspected element.",
   "devtools_page": "devtools.html",
   "manifest_version": 2,
