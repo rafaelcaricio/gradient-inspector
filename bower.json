@@ -1,0 +1,25 @@
+{
+  "name": "gradient-inspector",
+  "version": "0.1.2",
+  "homepage": "https://github.com/rafaelcaricio/gradient-inspector",
+  "authors": [
+    "Rafael Caricio <rafael.jacinto@gmail.com>"
+  ],
+  "description": "Inspect into CSS gradients.",
+  "main": "devtools.js",
+  "keywords": [
+    "chrome",
+    "plugin"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "gradient-parser": "~0.2.0"
+  }
+}

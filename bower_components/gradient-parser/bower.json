@@ -1,0 +1,29 @@
+{
+  "name": "gradient-parser",
+  "version": "0.2.0",
+  "main": "build/web.js",
+  "ignore": [
+    ".editorconfig",
+    ".gitattributes",
+    ".gitignore",
+    ".jshintrc",
+    ".npmignore",
+    ".travis.yml",
+    ".umd",
+    "package.json",
+    "index.html",
+    "Makefile",
+    "build/node.js",
+    "README.md",
+    "*.js",
+    "lib/*",
+    "spec/*",
+    "LICENSE"
+  ],
+  "dependencies": {
+
+  },
+  "devDependencies": {
+
+  }
+}

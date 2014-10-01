@@ -1,0 +1,35 @@
+{
+  "name": "gradient-parser",
+  "version": "0.2.0",
+  "main": "build/web.js",
+  "ignore": [
+    ".editorconfig",
+    ".gitattributes",
+    ".gitignore",
+    ".jshintrc",
+    ".npmignore",
+    ".travis.yml",
+    ".umd",
+    "package.json",
+    "index.html",
+    "Makefile",
+    "build/node.js",
+    "README.md",
+    "*.js",
+    "lib/*",
+    "spec/*",
+    "LICENSE"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "homepage": "https://github.com/rafaelcaricio/gradient-parser",
+  "_release": "0.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.2.0",
+    "commit": "ac093b15b3fa30ef9d30451e11bf14fb3074ac2a"
+  },
+  "_source": "git://github.com/rafaelcaricio/gradient-parser.git",
+  "_target": "~0.2.0",
+  "_originalSource": "gradient-parser"
+}
