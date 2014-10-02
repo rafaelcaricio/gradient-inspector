@@ -1,6 +1,8 @@
 CSS Gradient Inspector
 ======================
 
+[![Code Climate](https://codeclimate.com/github/rafaelcaricio/gradient-inspector/badges/gpa.svg)](https://codeclimate.com/github/rafaelcaricio/gradient-inspector)
+
 Chrome Extension that adds a sidebar to the Developer Tools that displays information about the gradients applied to the inspected element. You can also toggle each gradient individually as they are different layers.
 
 [![](https://github.com/rafaelcaricio/gradient-inspector/blob/master/img/screenshot.png)](http://bit.ly/cssGradientInspector)
